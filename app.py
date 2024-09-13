@@ -46,7 +46,7 @@ def buscar():
     
     registros = cursor.fetchall()
 
-    return registros;
+    return registros
 
 @app.route("/evento", methods=["GET"])
 def evento():
