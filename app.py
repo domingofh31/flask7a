@@ -37,7 +37,15 @@ def alumnosGuardar():
 
 @app.route("/buscar")
 def buscar():
-  return "Hola";
+    if not con.is_connected():
+        con.reconnect()
+
+    cursor = con.cursor()
+    cursor.execute("SELECT * FROM customers")
+    
+    registros = cursor.fetchall()
+
+    return registros;
 
 @app.route("/evento", methods=["GET"])
 def evento():
