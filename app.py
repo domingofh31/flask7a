@@ -41,10 +41,10 @@ def buscar():
         con.reconnect()
 
     cursor = con.cursor()
-    cursor.execute("SELECT * FROM sensor_log")
-    con.close()
-    
+    cursor.execute("SELECT * FROM sensor_log")    
     registros = cursor.fetchall()
+
+    con.close()
 
     return registros
 
