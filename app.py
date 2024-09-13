@@ -40,6 +40,16 @@ def evento():
     if not con.is_connected():
         con.reconnect()
 
+    cursor = con.cursor()
+
+    args = request.args
+  
+    sql = "INSERT INTO sensor_log (Temperatura, Humedad, Fecha_Hora) VALUES (%s, %s, %s)"
+    val = (args["temperatura"], args["humedad"], datetime.datetime.now())
+    cursor.execute(sql, val)
+    
+    con.commit()
+
     pusher_client = pusher.Pusher(
         app_id="1714541",
         key="cda1cc599395d699a2af",
