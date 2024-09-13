@@ -35,6 +35,10 @@ def alumnosGuardar():
     nombreapellido = request.form["txtNombreApellidoFA"]
     return f"Matrícula: {matricula} Nombre y Apellido: {nombreapellido}"
 
+@app.route("/buscar")
+def buscar():
+  return "Hola";
+
 @app.route("/evento", methods=["GET"])
 def evento():
     if not con.is_connected():
@@ -49,6 +53,7 @@ def evento():
     cursor.execute(sql, val)
     
     con.commit()
+    con.close()
 
     pusher_client = pusher.Pusher(
         app_id="1714541",
