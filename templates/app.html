@@ -9,7 +9,6 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
     <title>App</title>
-
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 </head>
 <body>
@@ -47,25 +46,12 @@
 
         buscar()
 
-        // Enable pusher logging - don't include this in production
-        Pusher.logToConsole = true
-        
         var pusher = new Pusher("cda1cc599395d699a2af", {
             cluster: "us2"
         })
-        
-        // Canal -> Conexion
-        var channel = pusher.subscribe("conexion");
-        // Evento: Acción de la aplicación
-        channel.bind("evento", function (mensaje) {
-            // alert("Ya ocurrió el evento en la aplicación")
-            /**
-            $("#tbodyLog").append(`<tr>
-                <td>${mensaje["temperatura"]}</td>
-                <td>${mensaje["humedad"]}</td>
-                <td>${mensaje["fechahora"]}</td>
-            </tr>`)
-            */
+
+        var channel = pusher.subscribe("registrosTiempoReal")
+        channel.bind("registroTiempoReal", function (mensaje) {
             buscar()
         })
     </script>
