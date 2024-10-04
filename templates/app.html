@@ -14,12 +14,30 @@
 </head>
 <body>
     <div class="container">
+      <form id="frmTemperaturaHumedad" method="post">
+          <input type="hidden" id="id" name="id">
+
+          <div class="mb-1">
+              <label for="temperatura">Temperatura</label>
+              <input type="number" id="temperatura" name="temperatura" class="form-control">
+          </div>
+          <div class="mb-1">
+              <label for="humedad">Humedad</label>
+              <input type="number" id="humedad" name="humedad" class="form-control">
+          </div>
+          <div class="mb-1">
+              <button id="guardar" name="guardar" class="btn btn-dark">Guardar</button>
+              <button type="reset" id="cancelar" name="cancelar" class="btn btn-link">Cancelar</button>
+          </div>
+      </form>
       <table class="table table-sm">
         <thead>
           <tr>
             <th>Temperatura</th>
             <th>Humedad</th>
-            <th>Fecha y Hora</th>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th></th>
           </tr>
         </thead>
         <tbody id="tbodyTemperaturaHumedad"></tbody>
@@ -94,29 +112,68 @@
             showActiveTheme(getPreferredTheme())
         })
     </script>
-    
+
     <script>
         window.addEventListener("load", function (event) {
-            // Realizamos un SELECT a la BD con FLASK y lo imprimimos en el TBODY
             function buscar() {
                 $.get("/buscar", function (respuesta) {
-                    // Imprimimos la respuesta de FLASK con SELECT para saber cómo acceder a cada valor y colocarlos en el TBODY
-                    // console.log(respuesta)
-
                     $("#tbodyTemperaturaHumedad").html("")
+
+                    var fechaAnterior = ""
 
                     for (var x in respuesta) {
                         var temperaturaHumedad = respuesta[x]
+
+                        var fecha = ""
+                        var fechaTemp = temperaturaHumedad["Fecha"]
+
+                        if (fechaAnterior != fechaTemp) {
+                            fecha         = fechaTemp
+                            fechaAnterior = fechaTemp
+                        }
+
                         $("#tbodyTemperaturaHumedad").append(`<tr>
-                            <td>${temperaturaHumedad[1]}</td>
-                            <td>${temperaturaHumedad[2]}</td>
-                            <td>${temperaturaHumedad[3]}</td>
+                            <td>${temperaturaHumedad["Temperatura"]}</td>
+                            <td>${temperaturaHumedad["Humedad"]}</td>
+                            <td>${fecha}</td>
+                            <td>${temperaturaHumedad["Hora"]}</td>
+                            <td>
+                                <button class="btn btn-primary btn-editar" data-id="${temperaturaHumedad["Id_Log"]}">Editar</button>
+                            </td>
                         </tr>`)
                     }
                 })
             }
 
             buscar()
+
+            $(document).on("click", ".btn-editar", function (event) {
+                var id = $(this).attr("data-id")
+
+                $.get("/editar", {id: id}, function (respuesta) {
+                    console.log(respuesta)
+                    var temperaturaHumedad = respuesta[0]
+
+                    $("#id")
+                    .val(temperaturaHumedad["Id_Log"])
+                    .trigger("focus")
+
+                    $("#temperatura").val(temperaturaHumedad["Temperatura"])
+                    $("#humedad").val(temperaturaHumedad["Humedad"])
+                })
+            })
+            
+            $("#frmTemperaturaHumedad")
+            .submit(function (event)  {
+                event.preventDefault()
+
+                $.post("/guardar", $(this).serialize(), function (respuesta) {
+                    $("#frmTemperaturaHumedad").get(0).reset()
+                })
+            })
+            .on("reset", function (event) {
+                $("#id").val("")
+            })
 
             Pusher.logToConsole = true
             
