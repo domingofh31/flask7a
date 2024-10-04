@@ -54,30 +54,43 @@ def buscar():
 
     return registros
 
-@app.route("/registrar", methods=["GET"])
-def registrar():
-    args = request.args
-
+@app.route("/guardar", methods=["POST"])
+def guardar():
     if not con.is_connected():
         con.reconnect()
 
+    id          = request.form["id"]
+    temperatura = request.form["temperatura"]
+    humedad     = request.form["humedad"]
+    fechahora   = datetime.datetime.now(pytz.timezone("America/Matamoros"))
+    
     cursor = con.cursor()
 
-    sql = "INSERT INTO sensor_log (Temperatura, Humedad, Fecha_Hora) VALUES (%s, %s, %s)"
-    val = (args["temperatura"], args["humedad"], datetime.datetime.now(pytz.timezone("America/Matamoros")))
-    cursor.execute(sql, val)
+    if id:
+        sql = """
+        UPDATE sensor_log SET
+        Temperatura = %s,
+        Humedad     = %s
+        WHERE Id_Log = %s
+        """
+        val = (temperatura, humedad, id)
+    else:
+        sql = """INSERT INTO sensor_log (Temperatura, Humedad, Fecha_Hora)
+                                 VALUES (%s,          %s,      %s)"""
+        val =                           (temperatura, humedad, fechahora)
     
+    cursor.execute(sql, val)
     con.commit()
     con.close()
 
     pusher_client = pusher.Pusher(
         app_id="1714541",
-        key="cda1cc599395d699a2af",
-        secret="9e9c00fc36600060d9e2",
+        key="3ce64b716f42fee14c9b",
+        secret="dfe422af8d19a7130710",
         cluster="us2",
         ssl=True
     )
 
-    pusher_client.trigger("canalRegistrosTemperaturaHumedad", "registroTemperaturaHumedad", args)
+    pusher_client.trigger("canalRegistrosTemperaturaHumedad", "registroTemperaturaHumedad", {})
 
-    return args
+    return jsonify({})
