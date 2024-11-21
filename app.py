@@ -40,6 +40,17 @@ def alumnosGuardar():
     return f"Matrícula {matricula} Nombre y Apellido {nombreapellido}"
 
 # Código usado en las prácticas
+def notificarActualizacionTemperaturaHumedad():
+    pusher_client = pusher.Pusher(
+        app_id="1714541",
+        key="2df86616075904231311",
+        secret="2f91d936fd43d8e85a1a",
+        cluster="us2",
+        ssl=True
+    )
+
+    pusher_client.trigger("canalRegistrosTemperaturaHumedad", "registroTemperaturaHumedad", args)
+
 @app.route("/buscar")
 def buscar():
     if not con.is_connected():
@@ -53,26 +64,6 @@ def buscar():
     """)
     registros = cursor.fetchall()
 
-    con.close()
-
-    return make_response(jsonify(registros))
-
-@app.route("/editar", methods=["GET"])
-def editar():
-    if not con.is_connected():
-        con.reconnect()
-
-    id = request.args["id"]
-
-    cursor = con.cursor(dictionary=True)
-    sql    = """
-    SELECT Id_Log, Temperatura, Humedad FROM sensor_log
-    WHERE Id_Log = %s
-    """
-    val    = (id,)
-
-    cursor.execute(sql, val)
-    registros = cursor.fetchall()
     con.close()
 
     return make_response(jsonify(registros))
@@ -108,14 +99,48 @@ def guardar():
     con.commit()
     con.close()
 
-    pusher_client = pusher.Pusher(
-        app_id="1714541",
-        key="3ce64b716f42fee14c9b",
-        secret="dfe422af8d19a7130710",
-        cluster="us2",
-        ssl=True
-    )
+    notificarActualizacionTemperaturaHumedad()
 
-    pusher_client.trigger("canalRegistrosTemperaturaHumedad", "registroTemperaturaHumedad", {})
+    return make_response(jsonify({}))
 
-    return jsonify({})
+@app.route("/editar", methods=["GET"])
+def editar():
+    if not con.is_connected():
+        con.reconnect()
+
+    id = request.args["id"]
+
+    cursor = con.cursor(dictionary=True)
+    sql    = """
+    SELECT Id_Log, Temperatura, Humedad FROM sensor_log
+    WHERE Id_Log = %s
+    """
+    val    = (id,)
+
+    cursor.execute(sql, val)
+    registros = cursor.fetchall()
+    con.close()
+
+    return make_response(jsonify(registros))
+
+@app.route("/eliminar", methods=["POST"])
+def eliminar():
+    if not con.is_connected():
+        con.reconnect()
+
+    id = request.form["id"]
+
+    cursor = con.cursor(dictionary=True)
+    sql    = """
+    DELETE FROM sensor_log
+    WHERE Id_Log = %s
+    """
+    val    = (id,)
+
+    cursor.execute(sql, val)
+    con.commit()
+    con.close()
+
+    notificarActualizacionTemperaturaHumedad()
+
+    return make_response(jsonify({}))
