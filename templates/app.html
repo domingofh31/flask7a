@@ -145,6 +145,7 @@
                             <td>${temperaturaHumedad["Hora"]}</td>
                             <td>
                                 <button class="btn btn-primary btn-editar" data-id="${temperaturaHumedad["Id_Log"]}">Editar</button>
+                                <button class="btn btn-danger btn-eliminar" data-id="${temperaturaHumedad["Id_Log"]}">Eliminar</button>
                             </td>
                         </tr>`)
                     }
@@ -169,6 +170,16 @@
                 })
             })
             
+            $(document).on("click", ".btn-eliminar", function (event) {
+                if (!confirm("¿Quieres eliminar este registro?")) {
+                    return
+                }
+
+                var id = $(this).attr("data-id")
+
+                $.post("/eliminar", {id: id})
+            })
+
             $("#frmTemperaturaHumedad")
             .submit(function (event)  {
                 event.preventDefault()
@@ -183,7 +194,7 @@
 
             Pusher.logToConsole = true
             
-            var pusher = new Pusher("cda1cc599395d699a2af", {
+            var pusher = new Pusher("2df86616075904231311", {
                 cluster: "us2"
             })
 
