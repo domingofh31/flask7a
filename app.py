@@ -83,7 +83,7 @@ class ControladorTemperaturaHumedad:
         con.commit()
         con.close()
     
-        notificarActualizacionTemperaturaHumedad()
+        self.notificarActualizacionTemperaturaHumedad()
     
         return make_response(jsonify({}))
 
