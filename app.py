@@ -13,15 +13,6 @@ import pytz
 app = Flask(__name__)
 
 class ControladorTemperaturaHumedad:
-    def conexion():
-        con = mysql.connector.connect(
-            host="185.232.14.52",
-            database="u760464709_tst_sep",
-            user="u760464709_tst_sep_usr",
-            password="dJ0CIAFF="
-        )
-        return con
-
     def notificarActualizacionTemperaturaHumedad():
         pusher_client = pusher.Pusher(
             app_id="1714541",
@@ -34,7 +25,12 @@ class ControladorTemperaturaHumedad:
         pusher_client.trigger("canalRegistrosTemperaturaHumedad", "registroTemperaturaHumedad", args)
 
     def buscar(self):
-        con = self.conexion()
+        con = mysql.connector.connect(
+            host="185.232.14.52",
+            database="u760464709_tst_sep",
+            user="u760464709_tst_sep_usr",
+            password="dJ0CIAFF="
+        )
 
         # if not con.is_connected():
             # con.reconnect()
@@ -54,7 +50,12 @@ class ControladorTemperaturaHumedad:
 
     
     def guardar(self, id, temperatura, humedad):
-        con = self.conexion()
+        con = mysql.connector.connect(
+            host="185.232.14.52",
+            database="u760464709_tst_sep",
+            user="u760464709_tst_sep_usr",
+            password="dJ0CIAFF="
+        )
 
         # if not con.is_connected():
             # con.reconnect()
@@ -86,6 +87,9 @@ class ControladorTemperaturaHumedad:
     
         return make_response(jsonify({}))
 
+    def editar():
+        print("Editar")
+    
     def eliminar():
         print("Eliminar")
 
