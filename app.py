@@ -20,6 +20,7 @@ class ControladorTemperaturaHumedad:
             user="u760464709_tst_sep_usr",
             password="dJ0CIAFF="
         )
+        return con
 
     def notificarActualizacionTemperaturaHumedad():
         pusher_client = pusher.Pusher(
