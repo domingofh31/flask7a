@@ -22,7 +22,7 @@ class ControladorTemperaturaHumedad:
             ssl=True
         )
     
-        pusher_client.trigger("canalRegistrosTemperaturaHumedad", "registroTemperaturaHumedad", args)
+        pusher_client.trigger("canalRegistrosTemperaturaHumedad", "registroTemperaturaHumedad", {})
 
     def buscar(self):
         con = mysql.connector.connect(
