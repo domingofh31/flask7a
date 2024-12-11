@@ -38,7 +38,7 @@ class ControladorTemperaturaHumedad:
         # if not con.is_connected():
             # con.reconnect()
     
-         cursor = con.cursor(dictionary=True)
+        cursor = con.cursor(dictionary=True)
 
         cursor.execute("""
         SELECT Id_Log, Temperatura, Humedad, DATE_FORMAT(Fecha_Hora, '%d/%m/%Y') AS Fecha, DATE_FORMAT(Fecha_Hora, '%H:%i:%s') AS Hora FROM sensor_log
