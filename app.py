@@ -32,7 +32,7 @@ class ControladorTemperaturaHumedad:
     
         pusher_client.trigger("canalRegistrosTemperaturaHumedad", "registroTemperaturaHumedad", args)
 
-    def buscar():
+    def buscar(self):
         con = self.conexion()
 
         # if not con.is_connected():
