@@ -16,8 +16,8 @@ class ControladorTemperaturaHumedad:
     def notificarActualizacionTemperaturaHumedad(self):
         pusher_client = pusher.Pusher(
             app_id="1714541",
-            key="2df86616075904231311",
-            secret="2f91d936fd43d8e85a1a",
+            key="fd5645cc1fbe3479bba7",
+            secret="5fcf6e39324c08027f21",
             cluster="us2",
             ssl=True
         )
