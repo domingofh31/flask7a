@@ -13,7 +13,7 @@ import pytz
 app = Flask(__name__)
 
 class ControladorTemperaturaHumedad:
-    def notificarActualizacionTemperaturaHumedad():
+    def notificarActualizacionTemperaturaHumedad(self):
         pusher_client = pusher.Pusher(
             app_id="1714541",
             key="2df86616075904231311",
